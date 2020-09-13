@@ -496,7 +496,7 @@ class BaseService
 
         if ( $save ) {
             // 更新redis
-            $this->redis->update($redisDatas, $redisField);
+            RedisService::update($redisDatas, $redisField);
 
             return true;
         }
@@ -516,9 +516,7 @@ class BaseService
             return false;
         }
 
-        $dbResult = $this->model->where($this->where)->update($datas);
-
-        return $this->dealDbResult($dbResult);
+        return  $dbResult = $this->model->where($this->where)->update($datas);
     }
 
     /**

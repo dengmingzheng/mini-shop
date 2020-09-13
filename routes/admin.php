@@ -14,4 +14,10 @@ Route::group(['namespace'=>'Admin','prefix'=>'admin','middleware'=>['admin.auth'
     Route::match(['get', 'post'], '/menus/create', 'MenuController@create');//添加菜单
     Route::match(['get', 'put'], '/menus/edit', 'MenuController@edit');//编辑菜单
     Route::delete('/menus/del', 'MenuController@del');//删除菜单
+
+    /*网站管理模块*/
+    Route::get('/banners', 'BannerController@index');//Banner列表
+    Route::match(['get', 'post'], '/banners/create', 'BannerController@create');//添加Banner
+    Route::match(['get', 'put'], '/banners/edit', 'BannerController@edit');//编辑Banner
+    Route::delete('/banners/del', 'BannerController@del');//删除Banner
 });

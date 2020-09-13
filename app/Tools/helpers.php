@@ -15,6 +15,6 @@ if (!function_exists('get_current_time')) {
 
     function get_current_time() {
 
-        return Carbon::now();
+        return Carbon::now()->toArray()['formatted'];
     }
 }

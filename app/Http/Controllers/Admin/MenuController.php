@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MenuRequest;
 use Illuminate\Support\Facades\Validator;
-use MenuService;
+use App\Services\MenuService;
 use AccountLogService;
 
 class MenuController extends Controller
 {
     //菜单列表
-    public function index(MenuRequest $request)
+    public function index(MenuRequest $request,MenuService $menuService)
     {
         $parent_id = $request->input('parent_id');
         $title = $request->input('title');
@@ -29,9 +29,11 @@ class MenuController extends Controller
         }
 
         //菜单分页数据
-        list($list,$page) = MenuService::init()->where($where)->orderBy('id','DESC')->with(['parent'])->getList(true);
+        list($list,$page) = $menuService->init()->where($where)->orderBy('id','DESC')->with(['parent'])->getList(true);
 
-        return view('system.menus.index', ['list' => $list['data'],'page'=>$page]);
+        $navs = $menuService->init()->getTopMenuWithChildren();
+
+        return view('system.menus.index', ['list' => $list['data'],'page'=>$page,'navs'=>$navs]);
 
     }
 
@@ -72,7 +74,7 @@ class MenuController extends Controller
     }
 
     ////编辑菜单
-    public function edit(MenuRequest $request)
+    public function edit(MenuRequest $request,MenuService $menuService)
     {
         $id = $request->input('id');
 
@@ -86,7 +88,7 @@ class MenuController extends Controller
             $data['is_show'] = $request->input('is_show');
             $data['updated_at'] = get_current_time();
 
-            $result = MenuService::init()->where(['id'=>$id])->update($data);
+            $result = $menuService->init()->where(['id'=>$id])->update($data);
 
             if ($result) {
                 //写入日志
@@ -108,9 +110,9 @@ class MenuController extends Controller
                 return showMessage('参数错误!');
             }
 
-            $detail = MenuService::init()->getInfo($id);
+            $detail = $menuService->init()->getInfo($id);
 
-            $navs = MenuService::init()->getTopMenuWithChildren();
+            $navs = $menuService->init()->getTopMenuWithChildren();
 
             return view('system.menus.editMenu', ['data' => $detail,'navs'=>$navs]);
         }
