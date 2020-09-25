@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['namespace'=>'Api'],function(){
+    Route::group(['namespace'=>'V1','prefix'=>'v1'],function(){
+        Route::get('test','BannerController@test');
+        Route::get('jokes','JokeController@index');
+
+        Route::get('movies','DouMovieController@movieList');//影视列表
+        Route::get('movie','DouMovieController@detail');//影视详细数据
+        Route::get('comments','DouMovieController@comments');//评论列表
+    });
+
 });

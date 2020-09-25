@@ -1,5 +1,3 @@
-// JavaScript Document
-
 
 //自定义radio样式
 $(document).ready(function () {
@@ -17,33 +15,6 @@ $(document).ready(function () {
     });
 });
 
-
-//图片比例缩放控制
-function DrawImage(ImgD, FitWidth, FitHeight) {
-    var image = new Image();
-    image.src = ImgD.src;
-    if (image.width > 0 && image.height > 0) {
-        if (image.width / image.height >= FitWidth / FitHeight) {
-            if (image.width > FitWidth) {
-                ImgD.width = FitWidth;
-                ImgD.height = (image.height * FitWidth) / image.width;
-            } else {
-                ImgD.width = image.width;
-                ImgD.height = image.height;
-            }
-        } else {
-            if (image.height > FitHeight) {
-                ImgD.height = FitHeight;
-                ImgD.width = (image.width * FitHeight) / image.height;
-            } else {
-                ImgD.width = image.width;
-                ImgD.height = image.height;
-            }
-        }
-    }
-}
-
-
 $(function () {
     // 显示隐藏预览图 start
     $('.show_image').hover(
@@ -58,10 +29,10 @@ $(function () {
     //全选、反选
     $('.checkAll').click(function () {
 
-        $('.checkAll').attr('checked', $(this).attr('checked') == 'checked');
+        $('.checkAll').prop('checked',$(this).prop('checked'));
 
         $('.checkItem').each(function () {
-            $(this).attr('checked', $('.checkAll').attr('checked') == 'checked');
+            $(this).prop('checked', $('.checkAll').prop('checked'));
         });
 
     });
@@ -130,20 +101,36 @@ $(function () {
             btn: ["确定", "取消"]
         }, function (index) {
             layer.close(index);
+            var ids=[];
             var delId = that.attr('deleteId');
             var url = that.attr('deleteUrl');
             var token = $('meta[name="csrf-token"]').attr('content');
             var _method = "delete";
+            ids.push(delId);
 
-            $.post(url, {id: delId, _token: token, _method: _method}, function (data) {
+            $.ajax({
+                type:'POST',
+                url:url,
+                dataType:'json',
+                data:{ids:ids, _token: token, _method: _method},
+                success:function(data){
                 //console.log(data);return false;
-                if (data.status == 200) {
-                    layer.msg(data.msg, {icon: 6, time: 3000});
-                } else {
-                    layer.msg(data.msg, {icon: 5, time: 30000});
-                }
+                    if (data.status == 200) {
+                        layer.msg(data.msg, {icon: 6, time: 3000});
+                    } else {
+                        layer.msg(data.msg, {icon: 5, time: 3000});
+                    }
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1000);
+                },
+                error:function(error){
+                    layer.msg(error.responseJSON.errors.ids[0], {icon: 5, time: 3000});
 
-                location.reload();
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1000);
+                }
             });
         }, function () {
             location.reload();
@@ -151,38 +138,55 @@ $(function () {
     });
 
     //删除多个
-    // $('.delAll').click(function(){
-    //     var that = $(this);
-    //
-    //     layer.confirm("您确定要删除吗？", {
-    //         btn: ["确定","取消"] //按钮
-    //     }, function(){
-    //         var ids=[];
-    //         var url=that.attr('deleteUrl');
-    //         var token=$('meta[name="csrf-token"]').attr('content');
-    //         var _method ="delete";
-    //
-    //         $('.checkItem').each(function(){
-    //             if($(this).attr('checked') == 'checked'){
-    //                 ids.push($(this).val());
-    //             };
-    //         });
-    //
-    //         $.post(url,{ids:ids,_token:token,_method:_method},function(data){
-    //
-    //             if(data.status == 200){
-    //                 layer.msg(data.msg, {icon: 6,time:3000});
-    //             }else{
-    //                 layer.msg(data.msg, {icon: 5,time:30000});
-    //             }
-    //
-    //             location.reload();
-    //         });
-    //
-    //     }, function(){
-    //         location.reload();
-    //     });
-    // });
+    $('.delAll').click(function(){
+        var that = $(this);
+
+        layer.confirm("您确定要删除吗？", {
+            btn: ["确定","取消"] //按钮
+        }, function(){
+            var ids=[];
+            var url=that.attr('deleteUrl');
+            var token=$('meta[name="csrf-token"]').attr('content');
+            var _method ="delete";
+
+            $('.checkItem').each(function(){
+                if($(this).prop('checked')){
+                    ids.push($(this).val());
+                };
+            });
+
+            $.ajax({
+                type:'POST',
+                url:url,
+                dataType:'json',
+                data:{ids:ids, _token: token, _method: _method},
+                success:function(data){
+                    // console.log(data);return false;
+                    if (data.status == 200) {
+                        layer.msg(data.msg, {icon: 6, time: 3000});
+                    } else {
+                        layer.msg(data.msg, {icon: 5, time: 3000});
+                    }
+
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1000);
+                },
+                error:function(error){
+                    // console.log(error);return false;
+                    layer.msg(error.responseJSON.errors.ids[0], {icon: 5, time: 3000});
+
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1000);
+
+                }
+            });
+
+        }, function(){
+            location.reload();
+        });
+    });
 });
 
 

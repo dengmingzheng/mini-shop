@@ -2,21 +2,11 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Menu;
+use App\Http\Requests\BaseRequest;
 
-class MenuRequest extends FormRequest
+class MenuRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -58,6 +48,12 @@ class MenuRequest extends FormRequest
                     ];
                 }
 
+            case 'DELETE':
+                {
+                    return [
+                        'ids'=>['required','array'],
+                    ];
+                }
             default:
                 {
                     return [];
@@ -78,8 +74,8 @@ class MenuRequest extends FormRequest
             'sort.between' => '排序在0-255之间',
             'is_show.required' => '请选择是否显示菜单',
             'is_show.boolean' => '参数错误',
-            'id.required' => '修改失败',
-            'id.integer' => '修改失败',
+            'id.required' => '参数错误',
+            'id.integer' => '参数错误',
         ];
     }
 }

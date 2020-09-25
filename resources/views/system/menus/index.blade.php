@@ -22,8 +22,8 @@
                     <td>
                         <select id="parent_id" name="parent_id" class="valid">
                             <option value="0">--请选择--</option>
-                            @if(!empty($navs))
-                                @foreach($navs as $val)
+                            @if(!empty($categories))
+                                @foreach($categories as $val)
                                     <option value="{{$val['id']}}" @if(request()->input('parent_id') == $val['id']) selected="selected" @endif>{{$val['title']}}</option>
                                     @if(!empty($val['children']))
                                         @foreach($val['children'] as $item)
@@ -96,7 +96,7 @@
                         <a href="JavaScript:void(0);" class="btn delAll" deleteUrl="{{url('admin/menus/del')}}"><span>删除</span></a>
 
                         <div class="pagination">
-                        {!! $page !!}
+                        {{$list->links()}}
                         </div>
                     </td>
                 </tr>

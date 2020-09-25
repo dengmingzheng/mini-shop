@@ -27,4 +27,9 @@ class Account extends Authenticatable
         'id' => 'integer',
         'login_num' => 'integer',
     ];
+
+    public function logs()
+    {
+        return $this->hasMany(AccountLog::class,'account_id','id');
+    }
 }

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services;
-use App\Models\AccountLog;
 
 class AccountLogService extends BaseService
 {
@@ -9,7 +8,7 @@ class AccountLogService extends BaseService
 
     public function __construct()
     {
-        $this->model = new AccountLog();
+        parent::__construct('AccountLog');
     }
 
     //写入日志
@@ -17,6 +16,7 @@ class AccountLogService extends BaseService
     {
         $insertData = [
             'account_id' => request()->session()->get('accountData')['id'],
+            'username'=>request()->session()->get('accountData')['username'],
             'content' => $content,
             'data' =>json_encode($data),
             'ip'=>request()->getClientIp(),
@@ -24,7 +24,7 @@ class AccountLogService extends BaseService
             'created_at' => get_current_time(),
         ];
 
-        return $this->model->insertGetId($insertData);
+        return $this->add($insertData);
     }
 
 }

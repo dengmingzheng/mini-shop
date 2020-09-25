@@ -22,6 +22,20 @@
                     <td class="vatop tips">{{$errors->first('name')}}</td>
                 </tr>
 
+                <tr class="">
+                    <td colspan="2" class="required"><label class="validation" for="">Banner类型:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform">
+                        <select id="type" name="type" class="valid">
+                            <option value="">--请选择--</option>
+                            @foreach($types as $key=>$val)
+                                <option value="{{$key}}" @if(old('type') ==$key) selected="selected" @endif>{{$val}}</option>
+                            @endforeach
+                        </select></td>
+                    <td class="vatop tips">{{$errors->first('type')}}</td>
+                </tr>
+
                 <tr>
                     <td colspan="2"><label class="validation" for="">位置:</label></td>
                 </tr>

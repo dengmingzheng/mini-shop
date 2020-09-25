@@ -37,7 +37,7 @@
             </ul>
         </nav>
         <div class="loca"><strong>您的位置:</strong>
-            <div id="crumbs" class="crumbs"><span>控制台</span><span class="arrow">&nbsp;</span><span>欢迎页面</span></div>
+            <div id="crumbs" class="crumbs"><span>{{$topTitle}}</span><span class="arrow">&nbsp;</span><span>{{$navTitle}}</span></div>
         </div>
 
     </div>

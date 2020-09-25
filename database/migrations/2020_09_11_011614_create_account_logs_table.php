@@ -16,6 +16,7 @@ class CreateAccountLogsTable extends Migration
         Schema::create('account_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('account_id')->index()->comment('用户ID');
+            $table->string('username',30)->comment('操作人');
             $table->string('content',50)->comment('标题');
             $table->json('data')->nullable()->comment('操作数据json');
             $table->string('ip',20)->comment('IP地址');

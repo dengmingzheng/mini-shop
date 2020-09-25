@@ -29,16 +29,16 @@ class MenuController extends Controller
         }
 
         //菜单分页数据
-        list($list,$page) = $menuService->init()->where($where)->orderBy('id','DESC')->with(['parent'])->getList(true);
+        $list = $menuService->getListWithPage($where,['parent']);
 
-        $navs = $menuService->init()->getTopMenuWithChildren();
+        $categories = $menuService->getTopMenuWithChildren();
 
-        return view('system.menus.index', ['list' => $list['data'],'page'=>$page,'navs'=>$navs]);
+        return view('system.menus.index', ['list' => $list,'categories'=>$categories]);
 
     }
 
     //添加菜单
-    public function create(MenuRequest $request)
+    public function create(MenuRequest $request,MenuService $menuService)
     {
         if ($request->isMethod('POST')) {
 
@@ -51,7 +51,7 @@ class MenuController extends Controller
             $data['created_at'] = get_current_time();
             $data['updated_at'] = get_current_time();
 
-            $result = MenuService::init()->add($data);
+            $result = $menuService->add($data);
 
             if ($result) {
                 //写入日志
@@ -68,12 +68,12 @@ class MenuController extends Controller
             }
 
         } else {
-            $navs = MenuService::init()->getTopMenuWithChildren();
+            $navs = $menuService->getTopMenuWithChildren();
             return view('system.menus.createMenu',['navs'=>$navs]);
         }
     }
 
-    ////编辑菜单
+    //编辑菜单
     public function edit(MenuRequest $request,MenuService $menuService)
     {
         $id = $request->input('id');
@@ -112,9 +112,18 @@ class MenuController extends Controller
 
             $detail = $menuService->init()->getInfo($id);
 
-            $navs = $menuService->init()->getTopMenuWithChildren();
+            $navs = $menuService->getTopMenuWithChildren();
 
             return view('system.menus.editMenu', ['data' => $detail,'navs'=>$navs]);
+        }
+    }
+
+    public function del(MenuRequest $request,MenuService $menuService)
+    {
+        if($request->isMethod('DELETE')){
+            $ids = $request->input('ids');
+
+            $result = $menuService->del($ids);
         }
     }
 }

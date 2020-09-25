@@ -26,6 +26,7 @@ class BannerController extends Controller
 
             $data = [
                 'name'=>$input['name'],
+                'type'=>$input['type'],
                 'position'=>$input['position'],
                 'open_type'=>$input['open_type'],
                 'navigator_url'=>$input['navigator_url'],
@@ -57,7 +58,10 @@ class BannerController extends Controller
                 return showMessage('添加失败');
             }
         }else{
-            return view('system.banner.create');
+
+            $types = $bannerService->types;
+
+            return view('system.banner.create',['types'=>$types]);
         }
     }
 
@@ -72,6 +76,7 @@ class BannerController extends Controller
 
             $data = [
                 'name'=>$input['name'],
+                'type'=>$input['type'],
                 'position'=>$input['position'],
                 'open_type'=>$input['open_type'],
                 'navigator_url'=>$input['navigator_url'],
@@ -109,7 +114,31 @@ class BannerController extends Controller
 
             $banner = $bannerService->init()->getInfo($id);
 
-            return view('system.banner.edit',['banner'=>$banner]);
+            $types = $bannerService->types;
+
+            return view('system.banner.edit',['banner'=>$banner,'types'=>$types]);
+        }
+    }
+
+    public function del(Request $request,BannerService $bannerService)
+    {
+        if($request->isMethod('DELETE')){
+            $id = $request->input('id');
+
+            if(!is_numeric($id) || empty($id)){
+                return ['status'=>0,'msg'=>'数据异常'];
+            }
+
+            $result = $bannerService->init()->delete($id);
+
+            if($result){
+                //写入日志
+                AccountLogService::write('删除banner,ID为:'.$id,[]);
+
+                return ['status'=>200,'msg'=>'删除成功'];
+            }else{
+                return ['status'=>0,'msg'=>'删除失败'];
+            }
         }
     }
 }

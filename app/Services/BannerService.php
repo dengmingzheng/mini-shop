@@ -12,6 +12,10 @@ use App\Models\Banner;
 
 class BannerService extends BaseService
 {
+    public $types = [
+        1=>'banner',
+        2=>'导航'
+    ];
     /**
      * 查询字段
      * @var array
